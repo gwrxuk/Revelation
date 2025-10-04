@@ -5,6 +5,7 @@ import { useFrame, useThree, ThreeEvent } from '@react-three/fiber'
 import * as THREE from 'three'
 import { PhoenixBrush } from './PhoenixBrush'
 import { ChineseTextRenderer } from './ChineseTextRenderer'
+import OracleBanner from './OracleBanner'
 import { useOracle } from '../hooks/useOracle'
 
 export function FuluSystem() {
@@ -191,7 +192,7 @@ export function FuluSystem() {
         <PhoenixBrush isActive={isActive} />
       </group>
 
-      {/* 顯示的文字 */}
+      {/* 顯示的文字 - 3D 版本（備用） */}
       {(showText || isGeneratingOracle) && (
         <group position={[0, 2.5, 0]}>
           <ChineseTextRenderer 
@@ -200,6 +201,13 @@ export function FuluSystem() {
           />
         </group>
       )}
+
+      {/* HTML 神諭橫幅 */}
+      <OracleBanner 
+        text={writtenText}
+        isVisible={showText || isGeneratingOracle}
+        isGenerating={isGeneratingOracle}
+      />
 
       {/* 神聖光環 */}
       {isActive && (
