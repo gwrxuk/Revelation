@@ -15,6 +15,7 @@ export default function OracleBanner({ text, isVisible, isGenerating = false }: 
 
   // 調試日誌
   console.log('OracleBanner Debug:', { text, isVisible, isGenerating, displayText, currentLineIndex })
+  console.log('OracleBanner displayText lines:', displayText.split('\n'))
 
   useEffect(() => {
     console.log('OracleBanner useEffect triggered:', { isVisible, isGenerating, text })
@@ -30,26 +31,17 @@ export default function OracleBanner({ text, isVisible, isGenerating = false }: 
       return
     }
 
-    // 重置動畫狀態
-    setDisplayText('')
-    setCurrentLineIndex(0)
-
-    // 逐行顯示文字動畫
-    const timers: NodeJS.Timeout[] = []
-    
-    lines.forEach((_, index) => {
-      const timer = setTimeout(() => {
-        setDisplayText(lines.slice(0, index + 1).join('\n'))
-        setCurrentLineIndex(index + 1)
-      }, (index + 1) * 800)
-      
-      timers.push(timer)
-    })
-
-    return () => {
-      timers.forEach(timer => clearTimeout(timer))
+    // 簡化：直接顯示文字，稍後再添加動畫
+    if (text) {
+      console.log('OracleBanner: Setting display text to:', text)
+      setDisplayText(text)
     }
-  }, [isVisible, isGenerating, lines, text])
+
+    // TODO: 稍後添加逐行動畫
+    // 重置動畫狀態
+    setCurrentLineIndex(lines.length)
+
+  }, [isVisible, isGenerating, text, lines.length])
 
   console.log('OracleBanner render check:', { isVisible, displayText })
 
@@ -70,18 +62,21 @@ export default function OracleBanner({ text, isVisible, isGenerating = false }: 
           </div>
           
           <div className="oracle-text">
-            {displayText.split('\n').map((line, index) => (
-              <div 
-                key={index} 
-                className={`oracle-line ${isGenerating ? 'generating' : ''}`}
-                style={{ 
-                  animationDelay: `${index * 0.3}s`,
-                  opacity: index < currentLineIndex || isGenerating ? 1 : 0
-                }}
-              >
-                {line}
-              </div>
-            ))}
+            {displayText ? (
+              displayText.split('\n').map((line, index) => (
+                <div 
+                  key={index} 
+                  className={`oracle-line ${isGenerating ? 'generating' : ''}`}
+                  style={{ 
+                    animationDelay: `${index * 0.3}s`
+                  }}
+                >
+                  {line}
+                </div>
+              ))
+            ) : (
+              <div className="oracle-line">神諭準備中...</div>
+            )}
           </div>
           
           {/* 生成指示器 */}
