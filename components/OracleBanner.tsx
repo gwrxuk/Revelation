@@ -30,16 +30,26 @@ export default function OracleBanner({ text, isVisible, isGenerating = false }: 
       return
     }
 
-    // 逐行顯示文字動畫
-    const timer = setTimeout(() => {
-      if (currentLineIndex < lines.length) {
-        setDisplayText(lines.slice(0, currentLineIndex + 1).join('\n'))
-        setCurrentLineIndex(prev => prev + 1)
-      }
-    }, 800)
+    // 重置動畫狀態
+    setDisplayText('')
+    setCurrentLineIndex(0)
 
-    return () => clearTimeout(timer)
-  }, [isVisible, isGenerating, currentLineIndex, lines, text])
+    // 逐行顯示文字動畫
+    const timers: NodeJS.Timeout[] = []
+    
+    lines.forEach((_, index) => {
+      const timer = setTimeout(() => {
+        setDisplayText(lines.slice(0, index + 1).join('\n'))
+        setCurrentLineIndex(index + 1)
+      }, (index + 1) * 800)
+      
+      timers.push(timer)
+    })
+
+    return () => {
+      timers.forEach(timer => clearTimeout(timer))
+    }
+  }, [isVisible, isGenerating, lines, text])
 
   console.log('OracleBanner render check:', { isVisible, displayText })
 

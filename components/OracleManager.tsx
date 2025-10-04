@@ -44,7 +44,8 @@ export default function OracleManager({ isActive, onOracleComplete }: OracleMana
     } finally {
       console.log('OracleManager: Oracle generation complete')
       setIsGeneratingOracle(false)
-      onOracleComplete?.()
+      // 不要立即調用 onOracleComplete，讓用戶有時間閱讀神諭
+      // onOracleComplete?.()
     }
   }, [generateOracle, onOracleComplete])
 
@@ -67,6 +68,20 @@ export default function OracleManager({ isActive, onOracleComplete }: OracleMana
       clearOracle()
     }
   }, [isActive, startOracleGeneration, clearOracle])
+
+  // 當神諭生成完成且顯示時，設置自動關閉
+  useEffect(() => {
+    if (showText && !isGeneratingOracle && writtenText) {
+      console.log('OracleManager: Setting auto-close timer')
+      const autoCloseTimer = setTimeout(() => {
+        console.log('OracleManager: Auto-closing oracle')
+        clearOracle()
+        onOracleComplete?.()
+      }, 10000) // 10 秒後自動關閉
+      
+      return () => clearTimeout(autoCloseTimer)
+    }
+  }, [showText, isGeneratingOracle, writtenText, clearOracle, onOracleComplete])
 
   return (
     <OracleBanner 
