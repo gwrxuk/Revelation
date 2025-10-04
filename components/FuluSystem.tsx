@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState, useCallback, useEffect } from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
+import { useFrame, useThree, ThreeEvent } from '@react-three/fiber'
 import * as THREE from 'three'
 import { PhoenixBrush } from './PhoenixBrush'
 import { ChineseTextRenderer } from './ChineseTextRenderer'
@@ -74,37 +74,23 @@ export function FuluSystem() {
   }
 
   // 處理滑鼠點擊
-  const handleClick = useCallback((event: React.MouseEvent) => {
-    event.preventDefault()
+  const handleClick = useCallback((event: ThreeEvent<MouseEvent>) => {
+    event.stopPropagation()
     
-    if (!altarRef.current) return
+    console.log('供桌被點擊！開始扶鸞儀式')
+    setIsActive(!isActive)
     
-    // 更新滑鼠位置
-    const rect = (event.target as HTMLElement).getBoundingClientRect()
-    const x = ((event.clientX - rect.left) / rect.width) * 2 - 1
-    const y = -((event.clientY - rect.top) / rect.height) * 2 + 1
-    
-    raycaster.setFromCamera({ x, y }, camera)
-    
-    // 檢測與供桌的碰撞
-    const intersects = raycaster.intersectObject(altarRef.current, true)
-    
-    if (intersects.length > 0) {
-      console.log('供桌被點擊！開始扶鸞儀式')
-      setIsActive(!isActive)
-      
-      if (!isActive) {
-        // 開始扶鸞
-        setTimeout(() => {
-          setWrittenText('神靈降臨\n指引眾生\n福澤萬民\n功德無量')
-          setShowText(true)
-        }, 2000)
-      } else {
-        setShowText(false)
-        setWrittenText('')
-      }
+    if (!isActive) {
+      // 開始扶鸞
+      setTimeout(() => {
+        setWrittenText('神靈降臨\n指引眾生\n福澤萬民\n功德無量')
+        setShowText(true)
+      }, 2000)
+    } else {
+      setShowText(false)
+      setWrittenText('')
     }
-  }, [isActive, camera, raycaster])
+  }, [isActive])
 
   // 動畫效果
   useFrame((state) => {
