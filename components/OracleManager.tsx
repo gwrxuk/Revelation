@@ -17,12 +17,15 @@ export default function OracleManager({ isActive, onOracleComplete }: OracleMana
   const { generateOracle, isGenerating, error } = useOracle()
 
   const startOracleGeneration = useCallback(async () => {
+    console.log('OracleManager: Starting oracle generation')
     setIsGeneratingOracle(true)
     setShowText(true)
     
     try {
       // 生成 AI 神諭
+      console.log('OracleManager: Calling generateOracle')
       const oracleText = await generateOracle('請賜予神諭指引')
+      console.log('OracleManager: Received oracle text:', oracleText)
       setWrittenText(oracleText)
     } catch (err) {
       console.error('生成神諭失敗:', err)
@@ -36,8 +39,10 @@ export default function OracleManager({ isActive, onOracleComplete }: OracleMana
       ]
       
       const randomOracle = fallbackOracles[Math.floor(Math.random() * fallbackOracles.length)]
+      console.log('OracleManager: Using fallback oracle:', randomOracle)
       setWrittenText(randomOracle)
     } finally {
+      console.log('OracleManager: Oracle generation complete')
       setIsGeneratingOracle(false)
       onOracleComplete?.()
     }

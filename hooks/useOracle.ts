@@ -13,10 +13,12 @@ export function useOracle() {
   const [error, setError] = useState<string | null>(null)
 
   const generateOracle = useCallback(async (prompt?: string): Promise<string> => {
+    console.log('useOracle: Starting oracle generation with prompt:', prompt)
     setIsGenerating(true)
     setError(null)
 
     try {
+      console.log('useOracle: Making API request to /api/generate-oracle')
       const response = await fetch('/api/generate-oracle', {
         method: 'POST',
         headers: {
@@ -25,15 +27,21 @@ export function useOracle() {
         body: JSON.stringify({ prompt }),
       })
 
+      console.log('useOracle: API response status:', response.status)
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        const errorText = await response.text()
+        console.log('useOracle: API error response:', errorText)
+        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`)
       }
 
       const data: OracleResponse = await response.json()
+      console.log('useOracle: API response data:', data)
+      console.log('useOracle: Returning oracle text:', data.oracle)
       return data.oracle
 
     } catch (err) {
-      console.error('Error generating oracle:', err)
+      console.error('useOracle: Error generating oracle:', err)
       setError(err instanceof Error ? err.message : '生成神諭時發生錯誤')
       
       // 回退到預設神諭
@@ -46,6 +54,7 @@ export function useOracle() {
       ]
       
       const randomOracle = fallbackOracles[Math.floor(Math.random() * fallbackOracles.length)]
+      console.log('useOracle: Using fallback oracle:', randomOracle)
       return randomOracle
 
     } finally {

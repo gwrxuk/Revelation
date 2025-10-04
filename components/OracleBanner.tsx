@@ -13,7 +13,12 @@ export default function OracleBanner({ text, isVisible, isGenerating = false }: 
   const [currentLineIndex, setCurrentLineIndex] = useState(0)
   const lines = text.split('\n')
 
+  // 調試日誌
+  console.log('OracleBanner Debug:', { text, isVisible, isGenerating, displayText, currentLineIndex })
+
   useEffect(() => {
+    console.log('OracleBanner useEffect triggered:', { isVisible, isGenerating, text })
+    
     if (!isVisible) {
       setDisplayText('')
       setCurrentLineIndex(0)
@@ -35,6 +40,8 @@ export default function OracleBanner({ text, isVisible, isGenerating = false }: 
 
     return () => clearTimeout(timer)
   }, [isVisible, isGenerating, currentLineIndex, lines, text])
+
+  console.log('OracleBanner render check:', { isVisible, displayText })
 
   if (!isVisible) return null
 

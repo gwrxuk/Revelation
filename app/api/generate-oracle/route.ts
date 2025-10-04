@@ -4,7 +4,13 @@ export async function POST(request: NextRequest) {
   try {
     const { prompt } = await request.json()
     
+    console.log('=== Oracle API Debug ===')
+    console.log('API Key exists:', !!process.env.OPENAI_API_KEY)
+    console.log('API Key length:', process.env.OPENAI_API_KEY?.length)
+    console.log('Prompt:', prompt)
+    
     if (!process.env.OPENAI_API_KEY) {
+      console.log('ERROR: No API key found')
       return NextResponse.json({ error: 'OpenAI API key not configured' }, { status: 500 })
     }
 
@@ -46,15 +52,21 @@ export async function POST(request: NextRequest) {
     })
 
     if (!openaiResponse.ok) {
-      throw new Error(`OpenAI API error: ${openaiResponse.statusText}`)
+      const errorText = await openaiResponse.text()
+      console.log('OpenAI API Error:', openaiResponse.status, errorText)
+      throw new Error(`OpenAI API error: ${openaiResponse.status} - ${errorText}`)
     }
 
     const data = await openaiResponse.json()
+    console.log('OpenAI Response:', JSON.stringify(data, null, 2))
+    
     const oracleText = data.choices[0]?.message?.content || '神靈降臨\n指引眾生\n福澤萬民\n功德無量'
+    console.log('Generated Oracle:', oracleText)
 
     return NextResponse.json({ 
       oracle: oracleText,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      source: 'openai'
     })
 
   } catch (error) {
