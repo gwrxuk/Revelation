@@ -19,47 +19,88 @@ export function FuluSystem() {
 
   // 創建沙盤
   const createSandTray = () => {
-    const sandGeometry = new THREE.PlaneGeometry(6, 4)
-    const sandMaterial = new THREE.MeshLambertMaterial({ 
+    const group = new THREE.Group()
+
+    // 沙盤邊框
+    const borderGeometry = new THREE.BoxGeometry(8, 0.2, 6)
+    const borderMaterial = new THREE.MeshPhongMaterial({ 
+      color: 0x8B4513,
+      shininess: 50
+    })
+    const border = new THREE.Mesh(borderGeometry, borderMaterial)
+    border.position.y = 1.3
+    border.receiveShadow = true
+    border.castShadow = true
+    group.add(border)
+
+    // 沙盤表面
+    const sandGeometry = new THREE.PlaneGeometry(7, 5)
+    const sandMaterial = new THREE.MeshPhongMaterial({ 
       color: 0xF5DEB3,
+      shininess: 10,
       transparent: true,
-      opacity: 0.8
+      opacity: 0.9
     })
     const sandMesh = new THREE.Mesh(sandGeometry, sandMaterial)
     sandMesh.rotation.x = -Math.PI / 2
-    sandMesh.position.y = 1
+    sandMesh.position.y = 1.31
     sandMesh.receiveShadow = true
-    return sandMesh
+    group.add(sandMesh)
+
+    // 沙盤裝飾邊框
+    const innerBorderGeometry = new THREE.RingGeometry(2.5, 3, 32)
+    const innerBorderMaterial = new THREE.MeshBasicMaterial({ 
+      color: 0xFFD700,
+      transparent: true,
+      opacity: 0.6,
+      side: THREE.DoubleSide
+    })
+    const innerBorder = new THREE.Mesh(innerBorderGeometry, innerBorderMaterial)
+    innerBorder.rotation.x = -Math.PI / 2
+    innerBorder.position.y = 1.32
+    group.add(innerBorder)
+
+    return group
   }
 
   // 創建供桌
   const createAltar = () => {
     const group = new THREE.Group()
 
-    // 供桌主體
-    const altarGeometry = new THREE.BoxGeometry(8, 1, 4)
-    const altarMaterial = new THREE.MeshLambertMaterial({ 
+    // 供桌主體 - 更大更清晰
+    const altarGeometry = new THREE.BoxGeometry(10, 1.2, 6)
+    const altarMaterial = new THREE.MeshPhongMaterial({ 
       color: 0x8B4513,
+      shininess: 30,
       transparent: true,
-      opacity: 0.9
+      opacity: 0.95
     })
     const altarMesh = new THREE.Mesh(altarGeometry, altarMaterial)
-    altarMesh.position.y = 0.5
+    altarMesh.position.y = 0.6
     altarMesh.receiveShadow = true
     altarMesh.castShadow = true
     group.add(altarMesh)
 
-    // 供桌腿
-    const legGeometry = new THREE.CylinderGeometry(0.2, 0.2, 1, 8)
-    const legMaterial = new THREE.MeshLambertMaterial({ 
+    // 供桌邊緣裝飾 - 金色邊框
+    const edgeGeometry = new THREE.BoxGeometry(10.2, 0.1, 6.2)
+    const edgeMaterial = new THREE.MeshPhongMaterial({ 
+      color: 0xFFD700,
+      shininess: 100
+    })
+    const topEdge = new THREE.Mesh(edgeGeometry, edgeMaterial)
+    topEdge.position.y = 1.25
+    group.add(topEdge)
+
+    // 供桌腿 - 更粗更明顯
+    const legGeometry = new THREE.CylinderGeometry(0.3, 0.4, 1.2, 8)
+    const legMaterial = new THREE.MeshPhongMaterial({ 
       color: 0x654321,
-      transparent: true,
-      opacity: 0.9
+      shininess: 50
     })
 
     const legPositions = [
-      [-3.5, 0, -1.5], [3.5, 0, -1.5],
-      [-3.5, 0, 1.5], [3.5, 0, 1.5]
+      [-4.5, 0, -2.5], [4.5, 0, -2.5],
+      [-4.5, 0, 2.5], [4.5, 0, 2.5]
     ]
 
     legPositions.forEach(([x, y, z]) => {
@@ -69,6 +110,19 @@ export function FuluSystem() {
       leg.castShadow = true
       group.add(leg)
     })
+
+    // 供桌表面裝飾
+    const surfaceGeometry = new THREE.PlaneGeometry(8, 4)
+    const surfaceMaterial = new THREE.MeshPhongMaterial({ 
+      color: 0x8B4513,
+      shininess: 80,
+      transparent: true,
+      opacity: 0.8
+    })
+    const surface = new THREE.Mesh(surfaceGeometry, surfaceMaterial)
+    surface.position.y = 1.21
+    surface.rotation.x = -Math.PI / 2
+    group.add(surface)
 
     return group
   }
@@ -106,14 +160,14 @@ export function FuluSystem() {
   })
 
   const altarGeometry = createAltar()
-  const sandTray = createSandTray()
+  const sandTrayGeometry = createSandTray()
 
   return (
     <group>
       {/* 供桌與沙盤 */}
       <group ref={altarRef} onClick={handleClick}>
         <primitive object={altarGeometry} />
-        <primitive object={sandTray} ref={sandRef} />
+        <primitive object={sandTrayGeometry} ref={sandRef} />
       </group>
 
       {/* 鳳凰乩筆 */}

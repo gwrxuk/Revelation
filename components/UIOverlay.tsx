@@ -81,11 +81,14 @@ export default function UIOverlay({ showInstructions, onToggleInstructions }: UI
             <br />
             <p><strong>操作方式：</strong></p>
             <p>• <span style={{color: '#FFD700', fontWeight: 'bold'}}>點擊供桌</span>開始扶鸞儀式</p>
+            <p>• <span style={{color: '#FFD700', fontWeight: 'bold'}}>滑鼠拖拽</span>旋轉視角</p>
+            <p>• <span style={{color: '#FFD700', fontWeight: 'bold'}}>WASD鍵</span>移動相機</p>
+            <p>• <span style={{color: '#FFD700', fontWeight: 'bold'}}>滑鼠滾輪</span>縮放視角</p>
             <p>• 觀察鳳凰乩筆的神聖力量</p>
             <p>• 感受神靈降臨的神聖文字</p>
             <br />
             <p><strong>提示：</strong></p>
-            <p>供桌周圍有金色光環提示可點擊區域</p>
+            <p>供桌更大更清晰，金色光環提示可點擊區域</p>
             <br />
             <p><strong>文化意義：</strong></p>
             <p>扶鸞是台灣道教文化的重要組成部分，</p>
@@ -123,11 +126,12 @@ export default function UIOverlay({ showInstructions, onToggleInstructions }: UI
           fontSize: '0.9rem',
           backdropFilter: 'blur(10px)'
         }}>
-          <h4 style={{ color: '#FFD700', marginBottom: '10px' }}>互動提示</h4>
+          <h4 style={{ color: '#FFD700', marginBottom: '10px' }}>互動控制</h4>
           <p>🖱️ <strong>點擊供桌</strong>開始儀式</p>
-          <p>👁️ 觀察鳳凰乩筆的動畫</p>
-          <p>📖 閱讀神靈降臨的文字</p>
-          <p>✨ 供桌周圍有金色光環提示</p>
+          <p>🎮 <strong>滑鼠拖拽</strong>旋轉視角</p>
+          <p>⌨️ <strong>WASD</strong>移動相機</p>
+          <p>🔍 <strong>滑鼠滾輪</strong>縮放</p>
+          <p>⬆️⬇️ <strong>Q/E</strong>上升/下降</p>
         </div>
       </div>
     </div>

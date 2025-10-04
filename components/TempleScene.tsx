@@ -4,6 +4,7 @@ import { Canvas } from '@react-three/fiber'
 import { Suspense } from 'react'
 import { Temple } from './Temple'
 import { FuluSystem } from './FuluSystem'
+import { CameraControls } from './CameraControls'
 
 export default function TempleScene() {
   return (
@@ -23,6 +24,9 @@ export default function TempleScene() {
             shadow-mapSize-width={2048}
             shadow-mapSize-height={2048}
           />
+          
+          {/* 相機控制 */}
+          <CameraControls />
           
           {/* 廟宇場景 */}
           <Temple />
