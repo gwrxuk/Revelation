@@ -5,21 +5,19 @@ import { useFrame, useThree, ThreeEvent } from '@react-three/fiber'
 import * as THREE from 'three'
 import { PhoenixBrush } from './PhoenixBrush'
 import { ChineseTextRenderer } from './ChineseTextRenderer'
-import OracleBanner from './OracleBanner'
-import { useOracle } from '../hooks/useOracle'
 
-export function FuluSystem() {
+interface FuluSystemProps {
+  onOracleStart?: () => void
+}
+
+export function FuluSystem({ onOracleStart }: FuluSystemProps) {
   const [isActive, setIsActive] = useState(false)
-  const [writtenText, setWrittenText] = useState('')
-  const [showText, setShowText] = useState(false)
-  const [isGeneratingOracle, setIsGeneratingOracle] = useState(false)
   
   const altarRef = useRef<THREE.Group>(null)
   const brushRef = useRef<THREE.Group>(null)
   const sandRef = useRef<THREE.Mesh>(null)
   
   const { camera, raycaster, mouse } = useThree()
-  const { generateOracle, isGenerating, error } = useOracle()
 
   // 創建沙盤
   const createSandTray = () => {
@@ -132,36 +130,17 @@ export function FuluSystem() {
   }
 
   // 處理滑鼠點擊
-  const handleClick = useCallback(async (event: ThreeEvent<MouseEvent>) => {
+  const handleClick = useCallback((event: ThreeEvent<MouseEvent>) => {
     event.stopPropagation()
     
     console.log('供桌被點擊！開始扶鸞儀式')
     setIsActive(!isActive)
     
     if (!isActive) {
-      // 開始扶鸞
-      setIsGeneratingOracle(true)
-      
-      setTimeout(async () => {
-        try {
-          // 生成 AI 神諭
-          const oracleText = await generateOracle('請賜予神諭指引')
-          setWrittenText(oracleText)
-          setShowText(true)
-        } catch (err) {
-          console.error('生成神諭失敗:', err)
-          // 使用預設神諭
-          setWrittenText('神靈降臨\n指引眾生\n福澤萬民\n功德無量')
-          setShowText(true)
-        } finally {
-          setIsGeneratingOracle(false)
-        }
-      }, 2000)
-    } else {
-      setShowText(false)
-      setWrittenText('')
+      // 通知外部組件開始神諭生成
+      onOracleStart?.()
     }
-  }, [isActive, generateOracle])
+  }, [isActive, onOracleStart])
 
   // 動畫效果
   useFrame((state) => {
@@ -192,22 +171,7 @@ export function FuluSystem() {
         <PhoenixBrush isActive={isActive} />
       </group>
 
-      {/* 顯示的文字 - 3D 版本（備用） */}
-      {(showText || isGeneratingOracle) && (
-        <group position={[0, 2.5, 0]}>
-          <ChineseTextRenderer 
-            text={isGeneratingOracle ? '神靈降臨中...\n乩筆書寫中...\n天機顯現中...\n請稍候...' : writtenText} 
-            isGenerating={isGeneratingOracle}
-          />
-        </group>
-      )}
 
-      {/* HTML 神諭橫幅 */}
-      <OracleBanner 
-        text={writtenText}
-        isVisible={showText || isGeneratingOracle}
-        isGenerating={isGeneratingOracle}
-      />
 
       {/* 神聖光環 */}
       {isActive && (

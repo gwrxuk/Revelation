@@ -1,12 +1,15 @@
 'use client'
 
 import { Canvas } from '@react-three/fiber'
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 import { Temple } from './Temple'
 import { FuluSystem } from './FuluSystem'
 import { CameraControls } from './CameraControls'
+import OracleManager from './OracleManager'
 
 export default function TempleScene() {
+  const [isOracleActive, setIsOracleActive] = useState(false)
+
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       <Canvas
@@ -32,9 +35,15 @@ export default function TempleScene() {
           <Temple />
           
           {/* 扶鸞系統 */}
-          <FuluSystem />
+          <FuluSystem onOracleStart={() => setIsOracleActive(true)} />
         </Suspense>
       </Canvas>
+      
+      {/* HTML 神諭管理器 - 在 Three.js 場景外部 */}
+      <OracleManager 
+        isActive={isOracleActive}
+        onOracleComplete={() => setIsOracleActive(false)}
+      />
     </div>
   )
 }
