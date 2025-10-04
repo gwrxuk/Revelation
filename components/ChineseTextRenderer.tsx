@@ -6,9 +6,10 @@ import * as THREE from 'three'
 
 interface ChineseTextRendererProps {
   text: string
+  isGenerating?: boolean
 }
 
-export function ChineseTextRenderer({ text }: ChineseTextRendererProps) {
+export function ChineseTextRenderer({ text, isGenerating = false }: ChineseTextRendererProps) {
   const textRef = useRef<THREE.Group>(null)
   const glowRef = useRef<THREE.Mesh>(null)
 
@@ -23,13 +24,24 @@ export function ChineseTextRenderer({ text }: ChineseTextRendererProps) {
       
       // 文字旋轉效果
       textRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.05
+      
+      // 生成時的脈動效果
+      if (isGenerating) {
+        const pulseScale = 1 + Math.sin(state.clock.elapsedTime * 4) * 0.05
+        textRef.current.scale.setScalar(pulseScale)
+      } else {
+        textRef.current.scale.setScalar(1)
+      }
     }
 
     if (glowRef.current && glowRef.current.material instanceof THREE.MeshBasicMaterial) {
       // 背景光暈脈動
       const scale = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.1
       glowRef.current.scale.setScalar(scale)
-      glowRef.current.material.opacity = 0.2 + Math.sin(state.clock.elapsedTime * 1.5) * 0.1
+      
+      // 生成時更強烈的光暈
+      const baseOpacity = isGenerating ? 0.4 : 0.2
+      glowRef.current.material.opacity = baseOpacity + Math.sin(state.clock.elapsedTime * 1.5) * 0.1
     }
   })
 
@@ -50,12 +62,12 @@ export function ChineseTextRenderer({ text }: ChineseTextRendererProps) {
       {lines.map((line, index) => (
         <mesh key={index} position={[0, (lines.length - 1 - index) * 0.6, 0]}>
           <planeGeometry args={[4, 0.8]} />
-          <meshBasicMaterial 
-            color="#FFD700" 
-            transparent 
-            opacity={0.8}
-            side={THREE.DoubleSide}
-          />
+        <meshBasicMaterial 
+          color={isGenerating ? "#FF6347" : "#FFD700"} 
+          transparent 
+          opacity={isGenerating ? 0.9 : 0.8}
+          side={THREE.DoubleSide}
+        />
         </mesh>
       ))}
 
