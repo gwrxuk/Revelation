@@ -80,9 +80,12 @@ export default function UIOverlay({ showInstructions, onToggleInstructions }: UI
             <p>鳳凰象徵神靈，透過乩筆書寫神諭，指引眾生。</p>
             <br />
             <p><strong>操作方式：</strong></p>
-            <p>• 點擊供桌開始扶鸞儀式</p>
+            <p>• <span style={{color: '#FFD700', fontWeight: 'bold'}}>點擊供桌</span>開始扶鸞儀式</p>
             <p>• 觀察鳳凰乩筆的神聖力量</p>
             <p>• 感受神靈降臨的神聖文字</p>
+            <br />
+            <p><strong>提示：</strong></p>
+            <p>供桌周圍有金色光環提示可點擊區域</p>
             <br />
             <p><strong>文化意義：</strong></p>
             <p>扶鸞是台灣道教文化的重要組成部分，</p>
@@ -121,9 +124,10 @@ export default function UIOverlay({ showInstructions, onToggleInstructions }: UI
           backdropFilter: 'blur(10px)'
         }}>
           <h4 style={{ color: '#FFD700', marginBottom: '10px' }}>互動提示</h4>
-          <p>🖱️ 點擊供桌開始儀式</p>
+          <p>🖱️ <strong>點擊供桌</strong>開始儀式</p>
           <p>👁️ 觀察鳳凰乩筆的動畫</p>
           <p>📖 閱讀神靈降臨的文字</p>
+          <p>✨ 供桌周圍有金色光環提示</p>
         </div>
       </div>
     </div>

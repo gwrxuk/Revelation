@@ -74,13 +74,23 @@ export function FuluSystem() {
   }
 
   // 處理滑鼠點擊
-  const handleClick = useCallback((event: MouseEvent) => {
+  const handleClick = useCallback((event: React.MouseEvent) => {
     event.preventDefault()
     
-    raycaster.setFromCamera(mouse, camera)
-    const intersects = raycaster.intersectObjects(altarRef.current?.children || [])
+    if (!altarRef.current) return
+    
+    // 更新滑鼠位置
+    const rect = (event.target as HTMLElement).getBoundingClientRect()
+    const x = ((event.clientX - rect.left) / rect.width) * 2 - 1
+    const y = -((event.clientY - rect.top) / rect.height) * 2 + 1
+    
+    raycaster.setFromCamera({ x, y }, camera)
+    
+    // 檢測與供桌的碰撞
+    const intersects = raycaster.intersectObject(altarRef.current, true)
     
     if (intersects.length > 0) {
+      console.log('供桌被點擊！開始扶鸞儀式')
       setIsActive(!isActive)
       
       if (!isActive) {
@@ -94,7 +104,7 @@ export function FuluSystem() {
         setWrittenText('')
       }
     }
-  }, [isActive, camera, mouse, raycaster])
+  }, [isActive, camera, raycaster])
 
   // 動畫效果
   useFrame((state) => {
@@ -109,19 +119,13 @@ export function FuluSystem() {
     }
   })
 
-  // 添加事件監聽器
-  useEffect(() => {
-    window.addEventListener('click', handleClick)
-    return () => window.removeEventListener('click', handleClick)
-  }, [handleClick])
-
   const altarGeometry = createAltar()
   const sandTray = createSandTray()
 
   return (
     <group>
       {/* 供桌與沙盤 */}
-      <group ref={altarRef}>
+      <group ref={altarRef} onClick={handleClick}>
         <primitive object={altarGeometry} />
         <primitive object={sandTray} ref={sandRef} />
       </group>
@@ -152,6 +156,21 @@ export function FuluSystem() {
           </mesh>
           <mesh rotation={[-Math.PI / 2, 0, 0]}>
             <ringGeometry args={[3, 3.5, 32]} />
+            <meshBasicMaterial 
+              color={0xFFD700} 
+              transparent 
+              opacity={0.2}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+        </group>
+      )}
+
+      {/* 點擊提示 */}
+      {!isActive && (
+        <group position={[0, 1.5, 0]}>
+          <mesh rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[4, 4.5, 32]} />
             <meshBasicMaterial 
               color={0xFFD700} 
               transparent 
