@@ -56,6 +56,7 @@ export default function OracleManager({ isActive, onOracleComplete, onImagesGene
       
       // 通知父組件圖片已生成
       if (onImagesGenerated) {
+        console.log('OracleManager: Calling onImagesGenerated with:', images)
         onImagesGenerated(images)
       }
       

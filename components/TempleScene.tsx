@@ -15,6 +15,7 @@ export default function TempleScene() {
   const [showImages, setShowImages] = useState(false)
 
   const handleOracleStart = () => {
+    console.log('TempleScene: Oracle started')
     setIsOracleActive(true)
     setShowImages(true)
   }
@@ -28,6 +29,9 @@ export default function TempleScene() {
     // }, 15000) // 15秒後隱藏
   }
 
+  // 調試信息
+  console.log('TempleScene: oracleImages.deity =', oracleImages.deity)
+
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       {/* 背景圖片 */}
@@ -39,12 +43,28 @@ export default function TempleScene() {
             left: 0,
             width: '100vw',
             height: '100vh',
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url(${oracleImages.deity})`,
+            backgroundImage: `url(${oracleImages.deity})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             zIndex: -1,
-            opacity: 0.8
+            opacity: 0.5,
+            backgroundColor: '#000' // 添加黑色背景作為備用
+          }}
+        />
+      )}
+      
+      {/* 如果沒有背景圖片，顯示黑色背景 */}
+      {!oracleImages.deity && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: '#000',
+            zIndex: -1
           }}
         />
       )}
@@ -96,7 +116,10 @@ export default function TempleScene() {
       <OracleManager 
         isActive={isOracleActive}
         onOracleComplete={handleOracleComplete}
-        onImagesGenerated={setOracleImages}
+        onImagesGenerated={(images) => {
+          console.log('TempleScene: Received images:', images)
+          setOracleImages(images)
+        }}
       />
     </div>
   )
