@@ -5,7 +5,7 @@ import OracleBanner from './OracleBanner'
 import { AudioPlayer } from './AudioPlayer'
 import { useOracle } from '../hooks/useOracle'
 import { useTempleImages } from '../hooks/useTempleImages'
-import { useBuddhistMusic } from '../hooks/useBuddhistMusic'
+import { useTaoistMusic } from '../hooks/useBuddhistMusic'
 
 interface OracleManagerProps {
   isActive: boolean
@@ -17,6 +17,7 @@ export default function OracleManager({ isActive, onOracleComplete, onImagesGene
   const [writtenText, setWrittenText] = useState('')
   const [showText, setShowText] = useState(false)
   const [isGeneratingOracle, setIsGeneratingOracle] = useState(false)
+  const [musicEnded, setMusicEnded] = useState(false)
   
   const { generateOracle, isGenerating, error } = useOracle()
   const { generateBothImages, isGenerating: isGeneratingImages } = useTempleImages()
@@ -27,7 +28,7 @@ export default function OracleManager({ isActive, onOracleComplete, onImagesGene
     isPlaying: isMusicPlaying, 
     isGenerating: isGeneratingMusic,
     error: musicError 
-  } = useBuddhistMusic()
+  } = useTaoistMusic()
 
   const startOracleGeneration = useCallback(async () => {
     console.log('OracleManager: Starting oracle generation')
@@ -95,6 +96,7 @@ export default function OracleManager({ isActive, onOracleComplete, onImagesGene
     setShowText(false)
     setWrittenText('')
     setIsGeneratingOracle(false)
+    setMusicEnded(false)
     // 不停止音樂播放，讓音樂播放到結束
     // stopMusic()
   }, [])
@@ -113,19 +115,19 @@ export default function OracleManager({ isActive, onOracleComplete, onImagesGene
     }
   }, [isActive, isGeneratingOracle, showText, startOracleGeneration, clearOracle])
 
-  // 當神諭生成完成且顯示時，設置自動關閉
+  // 當神諭生成完成且顯示時，等待音樂播放結束
   useEffect(() => {
-    if (showText && !isGeneratingOracle && writtenText) {
-      console.log('OracleManager: Setting auto-close timer')
-      const autoCloseTimer = setTimeout(() => {
-        console.log('OracleManager: Auto-closing oracle (music continues playing)')
+    if (showText && !isGeneratingOracle && writtenText && !isMusicPlaying && !isGeneratingMusic) {
+      console.log('OracleManager: Music has ended, setting delayed close timer')
+      const delayedCloseTimer = setTimeout(() => {
+        console.log('OracleManager: Closing oracle after music ended + 3 seconds')
         clearOracle()
         onOracleComplete?.()
-      }, 15000) // 15 秒後自動關閉神諭，但音樂繼續播放
+      }, 3000) // 音樂播放完畢後 3 秒關閉神諭
       
-      return () => clearTimeout(autoCloseTimer)
+      return () => clearTimeout(delayedCloseTimer)
     }
-  }, [showText, isGeneratingOracle, writtenText, clearOracle, onOracleComplete])
+  }, [showText, isGeneratingOracle, writtenText, isMusicPlaying, isGeneratingMusic, clearOracle, onOracleComplete])
 
   return (
     <>

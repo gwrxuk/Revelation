@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef } from 'react'
 
-interface BuddhistMusicResponse {
+interface TaoistMusicResponse {
   audioDataUrl: string
   duration: number
   oracleText: string
@@ -11,7 +11,7 @@ interface BuddhistMusicResponse {
   fallback?: boolean
 }
 
-export function useBuddhistMusic() {
+export function useTaoistMusic() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -20,12 +20,12 @@ export function useBuddhistMusic() {
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const generateMusic = useCallback(async (oracleText?: string, duration = 30): Promise<string> => {
-    console.log('useBuddhistMusic: Starting music generation for oracle:', oracleText)
+    console.log('useTaoistMusic: Starting music generation for oracle:', oracleText)
     setIsGenerating(true)
     setError(null)
 
     try {
-      console.log('useBuddhistMusic: Making API request to /api/generate-buddhist-music')
+      console.log('useTaoistMusic: Making API request to /api/generate-buddhist-music')
       const response = await fetch('/api/generate-buddhist-music', {
         method: 'POST',
         headers: {
@@ -38,13 +38,13 @@ export function useBuddhistMusic() {
 
       if (!response.ok) {
         const errorText = await response.text()
-        console.log('useBuddhistMusic: API error response:', errorText)
+        console.log('useTaoistMusic: API error response:', errorText)
         throw new Error(`HTTP error! status: ${response.status} - ${errorText}`)
       }
 
-      const data: BuddhistMusicResponse = await response.json()
-      console.log('useBuddhistMusic: API response data:', data)
-      console.log('useBuddhistMusic: Returning audio URL:', data.audioDataUrl)
+      const data: TaoistMusicResponse = await response.json()
+      console.log('useTaoistMusic: API response data:', data)
+      console.log('useTaoistMusic: Returning audio URL:', data.audioDataUrl)
 
       setCurrentMusic(data.audioDataUrl)
       return data.audioDataUrl

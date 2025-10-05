@@ -91,9 +91,10 @@ export default function UIOverlay({ showInstructions, onToggleInstructions }: UI
       <p>每次點擊乩童都會生成不同的神諭指引</p>
       <p>使用 OpenAI GPT 生成智慧與哲理</p>
       <p>使用 OpenAI DALL-E 生成神像與廟宇圖片</p>
-      <p>使用 OpenAI TTS 生成佛教音樂與誦經</p>
+      <p>使用 OpenAI TTS 生成道教音樂與誦經</p>
       <p>圖片會在 3D 場景中顯示，增加沉浸感</p>
       <p>音樂會根據神諭內容自動生成並播放到結束</p>
+      <p>神諭會在音樂播放完畢後 3 秒自動關閉</p>
             <br />
             <p><strong>提示：</strong></p>
             <p>供桌更大更清晰，金色光環提示可點擊區域</p>
@@ -138,7 +139,7 @@ export default function UIOverlay({ showInstructions, onToggleInstructions }: UI
       <p>👤 <strong>點擊乩童</strong>開始儀式</p>
       <p>🤖 <strong>AI 生成</strong>神諭指引</p>
       <p>🖼️ <strong>DALL-E 生成</strong>神像廟宇圖片</p>
-      <p>🎵 <strong>AI 生成</strong>佛教音樂誦經</p>
+      <p>🎵 <strong>AI 生成</strong>道教音樂誦經</p>
       <p>🎮 <strong>滑鼠拖拽</strong>旋轉視角</p>
       <p>⌨️ <strong>WASD</strong>移動相機</p>
       <p>🔍 <strong>滑鼠滾輪</strong>縮放</p>

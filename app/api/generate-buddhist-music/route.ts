@@ -15,17 +15,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'OpenAI API key not configured' }, { status: 500 })
     }
 
-    // 根據神諭內容生成音樂提示詞
-    const musicPrompt = `Generate a peaceful Buddhist meditation music that matches the spiritual oracle message: "${oracleText}". 
+    // 根據神諭內容生成道教音樂提示詞
+    const musicPrompt = `Generate a peaceful Taoist meditation music that matches the spiritual oracle message: "${oracleText}". 
     
     The music should be:
     - Calm and meditative
-    - Traditional Buddhist style with chanting elements
-    - Suitable for temple ceremonies
-    - Harmonious and uplifting
+    - Traditional Taoist style with chanting elements
+    - Suitable for temple ceremonies and spiritual rituals
+    - Harmonious and uplifting with mystical atmosphere
     - Duration: ${duration} seconds
-    - Include traditional instruments like singing bowls, bells, and gentle chanting
-    - Create a sacred atmosphere that complements the oracle message`
+    - Include traditional Chinese instruments like guqin, xiao, bells, and Taoist chanting
+    - Create a sacred Taoist atmosphere that complements the oracle message
+    - Incorporate elements of traditional Chinese spiritual music`
 
     const openaiResponse = await fetch('https://api.openai.com/v1/audio/speech', {
       method: 'POST',
@@ -35,7 +36,7 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         model: 'tts-1',
-        input: `Buddhist meditation chant: Om mani padme hum, Om mani padme hum, Om mani padme hum. ${oracleText}. Om mani padme hum, Om mani padme hum, Om mani padme hum.`,
+        input: `Taoist meditation chant: 道可道，非常道。名可名，非常名。無名天地之始，有名萬物之母。${oracleText}。道法自然，無為而治。天地不仁，以萬物為芻狗。`,
         voice: 'alloy',
         response_format: 'mp3',
         speed: 0.8
@@ -53,7 +54,7 @@ export async function POST(request: NextRequest) {
     const base64Audio = Buffer.from(audioBuffer).toString('base64')
     const audioDataUrl = `data:audio/mp3;base64,${base64Audio}`
 
-    console.log('Buddhist music generated successfully')
+    console.log('Taoist music generated successfully')
 
     return NextResponse.json({ 
       audioDataUrl,
@@ -64,9 +65,9 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error generating Buddhist music:', error)
+    console.error('Error generating Taoist music:', error)
     
-    // 回退到預設的佛教音樂 URL（可以是公開的佛教音樂）
+    // 回退到預設的道教音樂 URL（可以是公開的道教音樂）
     const fallbackMusicUrls = [
       'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
       'https://www.soundjay.com/misc/sounds/bell-ringing-01.wav',
