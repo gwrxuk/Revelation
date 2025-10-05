@@ -79,7 +79,7 @@ export function useBuddhistMusic() {
       const audio = new Audio(audioUrl)
       audioRef.current = audio
       
-      audio.loop = true
+      audio.loop = false  // 不循環播放
       audio.volume = 0.6
       
       audio.addEventListener('loadstart', () => {

@@ -42,14 +42,16 @@ export default function OracleManager({ isActive, onOracleComplete, onImagesGene
         generateBothImages()
       ])
       
-      // 生成並播放佛教音樂
-      console.log('OracleManager: Generating and playing Buddhist music')
-      await generateAndPlayMusic(oracleText, 30)
-      
       console.log('OracleManager: Received oracle text:', oracleText)
       console.log('OracleManager: Received images:', images)
       
       setWrittenText(oracleText)
+      
+      // 生成並播放佛教音樂（異步執行，不阻塞神諭顯示）
+      console.log('OracleManager: Generating and playing Buddhist music')
+      generateAndPlayMusic(oracleText, 30).catch(err => {
+        console.error('OracleManager: Music generation failed:', err)
+      })
       
       // 通知父組件圖片已生成
       if (onImagesGenerated) {
@@ -133,14 +135,16 @@ export default function OracleManager({ isActive, onOracleComplete, onImagesGene
         isGenerating={isGeneratingOracle}
       />
       
-      {/* 音頻播放器 */}
-      <AudioPlayer
-        audioUrl={currentMusic}
-        isPlaying={isMusicPlaying}
-        volume={0.6}
-        loop={false}
-        onError={(error) => console.error('Music playback error:', error)}
-      />
+      {/* 音頻播放器 - 只在有音樂時渲染 */}
+      {currentMusic && (
+        <AudioPlayer
+          audioUrl={currentMusic}
+          isPlaying={isMusicPlaying}
+          volume={0.6}
+          loop={false}
+          onError={(error) => console.error('Music playback error:', error)}
+        />
+      )}
     </>
   )
 }

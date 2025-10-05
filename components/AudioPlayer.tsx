@@ -26,7 +26,14 @@ export function AudioPlayer({
   useEffect(() => {
     if (!audioUrl) return
 
-    // 創建音頻元素
+    // 清理之前的音頻元素
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.src = ''
+      audioRef.current.load()
+    }
+
+    // 創建新的音頻元素
     const audio = new Audio(audioUrl)
     audioRef.current = audio
     
@@ -111,8 +118,11 @@ export function AudioPlayer({
   useEffect(() => {
     return () => {
       if (audioRef.current) {
+        console.log('AudioPlayer: Cleaning up audio on unmount')
         audioRef.current.pause()
         audioRef.current.currentTime = 0
+        audioRef.current.src = ''
+        audioRef.current.load()
       }
     }
   }, [])

@@ -16,6 +16,8 @@ export default function OracleBanner({ text, isVisible, isGenerating = false }: 
   // 調試日誌
   console.log('OracleBanner Debug:', { text, isVisible, isGenerating, displayText, currentLineIndex })
   console.log('OracleBanner displayText lines:', displayText.split('\n'))
+  console.log('OracleBanner text length:', text?.length || 0)
+  console.log('OracleBanner displayText length:', displayText?.length || 0)
 
   useEffect(() => {
     console.log('OracleBanner useEffect triggered:', { isVisible, isGenerating, text })
@@ -41,7 +43,7 @@ export default function OracleBanner({ text, isVisible, isGenerating = false }: 
     // 重置動畫狀態
     setCurrentLineIndex(lines.length)
 
-  }, [isVisible, isGenerating, text, lines.length])
+  }, [isVisible, isGenerating, text])
 
   console.log('OracleBanner render check:', { isVisible, displayText })
 
