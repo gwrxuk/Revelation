@@ -93,7 +93,7 @@ export default function UIOverlay({ showInstructions, onToggleInstructions }: UI
       <p>使用 OpenAI DALL-E 生成神像與廟宇圖片</p>
       <p>使用 OpenAI TTS 生成佛教音樂與誦經</p>
       <p>圖片會在 3D 場景中顯示，增加沉浸感</p>
-      <p>音樂會根據神諭內容自動生成並播放</p>
+      <p>音樂會根據神諭內容自動生成並播放到結束</p>
             <br />
             <p><strong>提示：</strong></p>
             <p>供桌更大更清晰，金色光環提示可點擊區域</p>

@@ -93,9 +93,9 @@ export default function OracleManager({ isActive, onOracleComplete, onImagesGene
     setShowText(false)
     setWrittenText('')
     setIsGeneratingOracle(false)
-    // 停止音樂播放
-    stopMusic()
-  }, [stopMusic])
+    // 不停止音樂播放，讓音樂播放到結束
+    // stopMusic()
+  }, [])
 
   // 當 isActive 變化時處理神諭生成
   useEffect(() => {
@@ -116,10 +116,10 @@ export default function OracleManager({ isActive, onOracleComplete, onImagesGene
     if (showText && !isGeneratingOracle && writtenText) {
       console.log('OracleManager: Setting auto-close timer')
       const autoCloseTimer = setTimeout(() => {
-        console.log('OracleManager: Auto-closing oracle and stopping music')
+        console.log('OracleManager: Auto-closing oracle (music continues playing)')
         clearOracle()
         onOracleComplete?.()
-      }, 15000) // 15 秒後自動關閉，讓音樂播放更長時間
+      }, 15000) // 15 秒後自動關閉神諭，但音樂繼續播放
       
       return () => clearTimeout(autoCloseTimer)
     }
@@ -138,7 +138,7 @@ export default function OracleManager({ isActive, onOracleComplete, onImagesGene
         audioUrl={currentMusic}
         isPlaying={isMusicPlaying}
         volume={0.6}
-        loop={true}
+        loop={false}
         onError={(error) => console.error('Music playback error:', error)}
       />
     </>
