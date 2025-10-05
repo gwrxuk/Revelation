@@ -2,8 +2,10 @@
 
 import React, { useState, useCallback, useEffect } from 'react'
 import OracleBanner from './OracleBanner'
+import { AudioPlayer } from './AudioPlayer'
 import { useOracle } from '../hooks/useOracle'
 import { useTempleImages } from '../hooks/useTempleImages'
+import { useBuddhistMusic } from '../hooks/useBuddhistMusic'
 
 interface OracleManagerProps {
   isActive: boolean
@@ -18,6 +20,14 @@ export default function OracleManager({ isActive, onOracleComplete, onImagesGene
   
   const { generateOracle, isGenerating, error } = useOracle()
   const { generateBothImages, isGenerating: isGeneratingImages } = useTempleImages()
+  const { 
+    generateAndPlayMusic, 
+    stopMusic, 
+    currentMusic, 
+    isPlaying: isMusicPlaying, 
+    isGenerating: isGeneratingMusic,
+    error: musicError 
+  } = useBuddhistMusic()
 
   const startOracleGeneration = useCallback(async () => {
     console.log('OracleManager: Starting oracle generation')
@@ -25,12 +35,16 @@ export default function OracleManager({ isActive, onOracleComplete, onImagesGene
     setShowText(true)
     
     try {
-      // 並行生成神諭和圖片
-      console.log('OracleManager: Calling generateOracle and generateBothImages')
+      // 並行生成神諭、圖片和音樂
+      console.log('OracleManager: Calling generateOracle, generateBothImages, and generateAndPlayMusic')
       const [oracleText, images] = await Promise.all([
         generateOracle('請賜予神諭指引'),
         generateBothImages()
       ])
+      
+      // 生成並播放佛教音樂
+      console.log('OracleManager: Generating and playing Buddhist music')
+      await generateAndPlayMusic(oracleText, 30)
       
       console.log('OracleManager: Received oracle text:', oracleText)
       console.log('OracleManager: Received images:', images)
@@ -73,13 +87,15 @@ export default function OracleManager({ isActive, onOracleComplete, onImagesGene
       // 不要立即調用 onOracleComplete，讓用戶有時間閱讀神諭
       // onOracleComplete?.()
     }
-  }, [generateOracle, generateBothImages, onOracleComplete, onImagesGenerated])
+  }, [generateOracle, generateBothImages, generateAndPlayMusic, onOracleComplete, onImagesGenerated])
 
   const clearOracle = useCallback(() => {
     setShowText(false)
     setWrittenText('')
     setIsGeneratingOracle(false)
-  }, [])
+    // 停止音樂播放
+    stopMusic()
+  }, [stopMusic])
 
   // 當 isActive 變化時處理神諭生成
   useEffect(() => {
@@ -100,20 +116,31 @@ export default function OracleManager({ isActive, onOracleComplete, onImagesGene
     if (showText && !isGeneratingOracle && writtenText) {
       console.log('OracleManager: Setting auto-close timer')
       const autoCloseTimer = setTimeout(() => {
-        console.log('OracleManager: Auto-closing oracle')
+        console.log('OracleManager: Auto-closing oracle and stopping music')
         clearOracle()
         onOracleComplete?.()
-      }, 10000) // 10 秒後自動關閉
+      }, 15000) // 15 秒後自動關閉，讓音樂播放更長時間
       
       return () => clearTimeout(autoCloseTimer)
     }
   }, [showText, isGeneratingOracle, writtenText, clearOracle, onOracleComplete])
 
   return (
-    <OracleBanner 
-      text={writtenText}
-      isVisible={showText || isGeneratingOracle}
-      isGenerating={isGeneratingOracle}
-    />
+    <>
+      <OracleBanner 
+        text={writtenText}
+        isVisible={showText || isGeneratingOracle}
+        isGenerating={isGeneratingOracle}
+      />
+      
+      {/* 音頻播放器 */}
+      <AudioPlayer
+        audioUrl={currentMusic}
+        isPlaying={isMusicPlaying}
+        volume={0.6}
+        loop={true}
+        onError={(error) => console.error('Music playback error:', error)}
+      />
+    </>
   )
 }
