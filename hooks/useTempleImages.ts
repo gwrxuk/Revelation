@@ -40,21 +40,24 @@ export function useTempleImages() {
 
       const data: TempleImageResponse = await response.json()
       console.log('useTempleImages: API response data:', data)
-      console.log('useTempleImages: Returning image URL:', data.imageUrl)
+      
+      // 將 DALL-E URL 轉換為代理 URL
+      const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(data.imageUrl)}`
+      console.log('useTempleImages: Returning proxy URL:', proxyUrl)
 
       // 更新圖片狀態
       setImages(prev => ({
         ...prev,
-        [type]: data.imageUrl
+        [type]: proxyUrl
       }))
 
-      return data.imageUrl
+      return proxyUrl
 
     } catch (err) {
       console.error('useTempleImages: Error generating image:', err)
       setError(err instanceof Error ? err.message : '生成圖片時發生錯誤')
       
-      // 回退到預設圖片
+      // 回退到預設圖片 - 使用不需要代理的公開圖片
       const fallbackImages = {
         deity: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1024&h=1024&fit=crop&crop=center',
         temple: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1024&h=1024&fit=crop&crop=center'
@@ -63,6 +66,7 @@ export function useTempleImages() {
       const fallbackUrl = fallbackImages[type]
       console.log('useTempleImages: Using fallback image:', fallbackUrl)
       
+      // 對於 Unsplash 圖片，直接使用 URL（通常不需要代理）
       // 更新圖片狀態
       setImages(prev => ({
         ...prev,
