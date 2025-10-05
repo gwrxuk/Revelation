@@ -7,6 +7,7 @@ import { FuluSystem } from './FuluSystem'
 import { JiTong } from './JiTong'
 import { CameraControls } from './CameraControls'
 import { TempleImageDisplay } from './TempleImageDisplay'
+import { SceneBackground } from './SceneBackground'
 import OracleManager from './OracleManager'
 
 export default function TempleScene() {
@@ -34,47 +35,15 @@ export default function TempleScene() {
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      {/* 背景圖片 */}
-      {oracleImages.deity && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            backgroundImage: `url(${oracleImages.deity})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            zIndex: -1,
-            opacity: 0.5,
-            backgroundColor: '#000' // 添加黑色背景作為備用
-          }}
-        />
-      )}
-      
-      {/* 如果沒有背景圖片，顯示黑色背景 */}
-      {!oracleImages.deity && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            backgroundColor: '#000',
-            zIndex: -1
-          }}
-        />
-      )}
-      
       <Canvas
         camera={{ position: [0, 2, 15], fov: 50 }}
         shadows
-        gl={{ antialias: true, alpha: oracleImages.deity ? true : false }}
+        gl={{ antialias: true, alpha: false }}
       >
         <Suspense fallback={null}>
+          {/* 場景背景 - 使用生成的佛像圖片 */}
+          <SceneBackground imageUrl={oracleImages.deity} />
+          
           {/* 環境光 */}
           <ambientLight intensity={0.4} />
           <directionalLight
