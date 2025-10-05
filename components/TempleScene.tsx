@@ -21,19 +21,38 @@ export default function TempleScene() {
 
   const handleOracleComplete = () => {
     setIsOracleActive(false)
-    // 延遲隱藏圖片，讓用戶有時間欣賞
-    setTimeout(() => {
-      setShowImages(false)
-      setOracleImages({})
-    }, 15000) // 15秒後隱藏
+    // 不再隱藏圖片，保持背景顯示
+    // setTimeout(() => {
+    //   setShowImages(false)
+    //   setOracleImages({})
+    // }, 15000) // 15秒後隱藏
   }
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
+      {/* 背景圖片 */}
+      {oracleImages.deity && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url(${oracleImages.deity})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            zIndex: -1,
+            opacity: 0.8
+          }}
+        />
+      )}
+      
       <Canvas
         camera={{ position: [0, 2, 15], fov: 50 }}
         shadows
-        gl={{ antialias: true, alpha: false }}
+        gl={{ antialias: true, alpha: oracleImages.deity ? true : false }}
       >
         <Suspense fallback={null}>
           {/* 環境光 */}
@@ -61,16 +80,7 @@ export default function TempleScene() {
           {/* 乩童 */}
           <JiTong onOracleStart={handleOracleStart} />
           
-          {/* 生成的圖片顯示 */}
-          {oracleImages.deity && (
-            <TempleImageDisplay
-              imageUrl={oracleImages.deity}
-              type="deity"
-              position={[-8, 3, 2]}
-              isVisible={showImages}
-            />
-          )}
-          
+          {/* 生成的圖片顯示 - 只顯示廟宇圖片，佛像作為背景 */}
           {oracleImages.temple && (
             <TempleImageDisplay
               imageUrl={oracleImages.temple}
