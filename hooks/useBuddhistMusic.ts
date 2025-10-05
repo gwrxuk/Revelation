@@ -103,6 +103,10 @@ export function useBuddhistMusic() {
       audio.addEventListener('ended', () => {
         console.log('useBuddhistMusic: Music ended')
         setIsPlaying(false)
+        
+        // 清除音樂源，防止循環播放
+        audio.src = ''
+        audio.load()
       })
       
       audio.addEventListener('error', (e) => {
@@ -129,6 +133,8 @@ export function useBuddhistMusic() {
     if (audioRef.current) {
       audioRef.current.pause()
       audioRef.current.currentTime = 0
+      audioRef.current.src = ''
+      audioRef.current.load()
       setIsPlaying(false)
     }
   }, [])

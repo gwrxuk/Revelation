@@ -47,6 +47,12 @@ export function AudioPlayer({
     const handleEnded = () => {
       console.log('AudioPlayer: Music ended')
       onPlayEnd?.()
+      
+      // 清除音頻源，防止循環播放
+      if (audioRef.current) {
+        audioRef.current.src = ''
+        audioRef.current.load()
+      }
     }
     
     const handleError = (e: Event) => {
