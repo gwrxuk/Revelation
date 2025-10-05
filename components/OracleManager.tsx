@@ -3,18 +3,21 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import OracleBanner from './OracleBanner'
 import { useOracle } from '../hooks/useOracle'
+import { useTempleImages } from '../hooks/useTempleImages'
 
 interface OracleManagerProps {
   isActive: boolean
   onOracleComplete?: () => void
+  onImagesGenerated?: (images: { deity?: string, temple?: string }) => void
 }
 
-export default function OracleManager({ isActive, onOracleComplete }: OracleManagerProps) {
+export default function OracleManager({ isActive, onOracleComplete, onImagesGenerated }: OracleManagerProps) {
   const [writtenText, setWrittenText] = useState('')
   const [showText, setShowText] = useState(false)
   const [isGeneratingOracle, setIsGeneratingOracle] = useState(false)
   
   const { generateOracle, isGenerating, error } = useOracle()
+  const { generateBothImages, isGenerating: isGeneratingImages } = useTempleImages()
 
   const startOracleGeneration = useCallback(async () => {
     console.log('OracleManager: Starting oracle generation')
@@ -22,13 +25,25 @@ export default function OracleManager({ isActive, onOracleComplete }: OracleMana
     setShowText(true)
     
     try {
-      // 生成 AI 神諭
-      console.log('OracleManager: Calling generateOracle')
-      const oracleText = await generateOracle('請賜予神諭指引')
+      // 並行生成神諭和圖片
+      console.log('OracleManager: Calling generateOracle and generateBothImages')
+      const [oracleText, images] = await Promise.all([
+        generateOracle('請賜予神諭指引'),
+        generateBothImages()
+      ])
+      
       console.log('OracleManager: Received oracle text:', oracleText)
+      console.log('OracleManager: Received images:', images)
+      
       setWrittenText(oracleText)
+      
+      // 通知父組件圖片已生成
+      if (onImagesGenerated) {
+        onImagesGenerated(images)
+      }
+      
     } catch (err) {
-      console.error('生成神諭失敗:', err)
+      console.error('生成神諭或圖片失敗:', err)
       // 使用預設神諭
       const fallbackOracles = [
         '神靈降臨指引路\n智慧如光照眾生\n修行積德得福報\n慈悲為懷度有情',
@@ -41,13 +56,24 @@ export default function OracleManager({ isActive, onOracleComplete }: OracleMana
       const randomOracle = fallbackOracles[Math.floor(Math.random() * fallbackOracles.length)]
       console.log('OracleManager: Using fallback oracle:', randomOracle)
       setWrittenText(randomOracle)
+      
+      // 嘗試生成備用圖片
+      try {
+        const fallbackImages = await generateBothImages(randomOracle)
+        if (onImagesGenerated) {
+          onImagesGenerated(fallbackImages)
+        }
+      } catch (imageErr) {
+        console.error('生成備用圖片也失敗:', imageErr)
+      }
+      
     } finally {
       console.log('OracleManager: Oracle generation complete')
       setIsGeneratingOracle(false)
       // 不要立即調用 onOracleComplete，讓用戶有時間閱讀神諭
       // onOracleComplete?.()
     }
-  }, [generateOracle, onOracleComplete])
+  }, [generateOracle, generateBothImages, onOracleComplete, onImagesGenerated])
 
   const clearOracle = useCallback(() => {
     setShowText(false)
