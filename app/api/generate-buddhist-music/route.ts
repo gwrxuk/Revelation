@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         model: 'tts-1',
-        input: `Taoist meditation chant: 道可道，非常道。名可名，非常名。無名天地之始，有名萬物之母。${oracleText}。道法自然，無為而治。天地不仁，以萬物為芻狗。`,
+        input: `道可道，非常道。名可名，非常名。無名天地之始，有名萬物之母。${oracleText}。道法自然，無為而治。天地不仁，以萬物為芻狗。太上老君急急如律令。`,
         voice: 'alloy',
         response_format: 'mp3',
         speed: 0.8
