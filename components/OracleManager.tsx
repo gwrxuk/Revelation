@@ -83,17 +83,17 @@ export default function OracleManager({ isActive, onOracleComplete, onImagesGene
 
   // 當 isActive 變化時處理神諭生成
   useEffect(() => {
-    if (isActive) {
+    if (isActive && !isGeneratingOracle && !showText) {
       // 延遲 2 秒後開始生成神諭
       const timer = setTimeout(() => {
         startOracleGeneration()
       }, 2000)
       
       return () => clearTimeout(timer)
-    } else {
+    } else if (!isActive) {
       clearOracle()
     }
-  }, [isActive, startOracleGeneration, clearOracle])
+  }, [isActive, isGeneratingOracle, showText, startOracleGeneration, clearOracle])
 
   // 當神諭生成完成且顯示時，設置自動關閉
   useEffect(() => {

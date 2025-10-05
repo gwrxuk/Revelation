@@ -4,6 +4,7 @@ import { Canvas } from '@react-three/fiber'
 import { Suspense, useState } from 'react'
 import { Temple } from './Temple'
 import { FuluSystem } from './FuluSystem'
+import { JiTong } from './JiTong'
 import { CameraControls } from './CameraControls'
 import { TempleImageDisplay } from './TempleImageDisplay'
 import OracleManager from './OracleManager'
@@ -55,7 +56,10 @@ export default function TempleScene() {
           <Temple />
           
           {/* 扶鸞系統 */}
-          <FuluSystem onOracleStart={handleOracleStart} />
+          <FuluSystem />
+          
+          {/* 乩童 */}
+          <JiTong onOracleStart={handleOracleStart} />
           
           {/* 生成的圖片顯示 */}
           {oracleImages.deity && (

@@ -7,10 +7,10 @@ import { PhoenixBrush } from './PhoenixBrush'
 import { ChineseTextRenderer } from './ChineseTextRenderer'
 
 interface FuluSystemProps {
-  onOracleStart?: () => void
+  // 移除 onOracleStart prop，現在由乩童處理
 }
 
-export function FuluSystem({ onOracleStart }: FuluSystemProps) {
+export function FuluSystem({}: FuluSystemProps) {
   const [isActive, setIsActive] = useState(false)
   
   const altarRef = useRef<THREE.Group>(null)
@@ -129,18 +129,7 @@ export function FuluSystem({ onOracleStart }: FuluSystemProps) {
     return group
   }
 
-  // 處理滑鼠點擊
-  const handleClick = useCallback((event: ThreeEvent<MouseEvent>) => {
-    event.stopPropagation()
-    
-    console.log('供桌被點擊！開始扶鸞儀式')
-    setIsActive(!isActive)
-    
-    if (!isActive) {
-      // 通知外部組件開始神諭生成
-      onOracleStart?.()
-    }
-  }, [isActive, onOracleStart])
+  // 供桌現在只是裝飾，點擊功能由乩童處理
 
   // 動畫效果
   useFrame((state) => {
@@ -161,7 +150,7 @@ export function FuluSystem({ onOracleStart }: FuluSystemProps) {
   return (
     <group>
       {/* 供桌與沙盤 */}
-      <group ref={altarRef} onClick={handleClick}>
+      <group ref={altarRef}>
         <primitive object={altarGeometry} />
         <primitive object={sandTrayGeometry} ref={sandRef} />
       </group>

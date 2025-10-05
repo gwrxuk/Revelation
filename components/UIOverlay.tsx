@@ -79,8 +79,8 @@ export default function UIOverlay({ showInstructions, onToggleInstructions }: UI
             <p><strong>扶鸞</strong>，字面意為「扶持鳳凰」，是台灣傳統道教的重要儀式。</p>
             <p>鳳凰象徵神靈，透過乩筆書寫神諭，指引眾生。</p>
             <br />
-            <p><strong>操作方式：</strong></p>
-            <p>• <span style={{color: '#FFD700', fontWeight: 'bold'}}>點擊供桌</span>開始扶鸞儀式</p>
+      <p><strong>操作方式：</strong></p>
+      <p>• <span style={{color: '#FFD700', fontWeight: 'bold'}}>點擊乩童</span>開始扶鸞儀式</p>
             <p>• <span style={{color: '#FFD700', fontWeight: 'bold'}}>滑鼠拖拽</span>旋轉視角</p>
             <p>• <span style={{color: '#FFD700', fontWeight: 'bold'}}>WASD鍵</span>移動相機</p>
             <p>• <span style={{color: '#FFD700', fontWeight: 'bold'}}>滑鼠滾輪</span>縮放視角</p>
@@ -133,7 +133,7 @@ export default function UIOverlay({ showInstructions, onToggleInstructions }: UI
           backdropFilter: 'blur(10px)'
         }}>
       <h4 style={{ color: '#FFD700', marginBottom: '10px' }}>互動控制</h4>
-      <p>🖱️ <strong>點擊供桌</strong>開始儀式</p>
+      <p>👤 <strong>點擊乩童</strong>開始儀式</p>
       <p>🤖 <strong>AI 生成</strong>神諭指引</p>
       <p>🖼️ <strong>DALL-E 生成</strong>神像廟宇圖片</p>
       <p>🎮 <strong>滑鼠拖拽</strong>旋轉視角</p>
